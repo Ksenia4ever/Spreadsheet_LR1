@@ -1,6 +1,6 @@
 ﻿namespace Spreadsheet_LR1
 {
-    partial class Form1
+    partial class FormulaTestForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -55,6 +55,7 @@
             // 
             resultTextBox.Location = new Point(81, 68);
             resultTextBox.Name = "resultTextBox";
+            resultTextBox.ReadOnly = true;
             resultTextBox.Size = new Size(378, 23);
             resultTextBox.TabIndex = 2;
             // 
@@ -67,8 +68,9 @@
             label1.TabIndex = 3;
             label1.Text = "Result:";
             // 
-            // Form1
+            // FormulaTestForm
             // 
+            AcceptButton = calcualteButton;
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(593, 135);
@@ -76,8 +78,11 @@
             Controls.Add(resultTextBox);
             Controls.Add(calcualteButton);
             Controls.Add(formulaTextBox);
-            Name = "Form1";
-            Text = "Form1";
+            FormBorderStyle = FormBorderStyle.FixedDialog;
+            MaximizeBox = false;
+            Name = "FormulaTestForm";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Formula Test";
             ResumeLayout(false);
             PerformLayout();
         }
