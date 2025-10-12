@@ -15,7 +15,7 @@ namespace Spreadsheet_LR1
             {
                 var formula = formulaTextBox.Text;
 
-                var calculator = new FormulaCalculator();
+                var calculator = new FormulaCalculator() /*{ Host = Spreadsheet }*/;
                 calculator.Parse(formula);
                 var res = calculator.Calculate();
 

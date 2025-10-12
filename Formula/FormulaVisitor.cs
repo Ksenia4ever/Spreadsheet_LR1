@@ -4,7 +4,7 @@ namespace Formula
 {
     internal class FormulaVisitor : FormulaGrammarBaseVisitor<double>
     {
-        Dictionary<string, double> tableIdentifier = new Dictionary<string, double>();
+        internal IFormulaHost? Host { get; init; } = null;
 
         public override double VisitCompileUnit(FormulaGrammarParser.CompileUnitContext context)
         {
@@ -19,15 +19,13 @@ namespace Formula
             return result;
         }
 
-        //IdentifierExpr
         public override double VisitIdentifierExpr(FormulaGrammarParser.IdentifierExprContext context)
         {
-            var result = context.GetText();
-            double value;
+            var identifierName = context.GetText();
 
-            if (tableIdentifier.TryGetValue(result.ToString(), out value))
+            if (Host != null)
             {
-                return value;
+                return Host.GetIdentifierValue(identifierName);
             }
             else
             {

@@ -4,6 +4,8 @@ namespace Formula
 {
     public class FormulaCalculator
     {
+        public IFormulaHost? Host { get; init; } = null;
+
         FormulaGrammarParser.CompileUnitContext? Tree { get; set; } = null;
 
         public void Parse(string expression)
@@ -25,7 +27,7 @@ namespace Formula
                 throw new InvalidOperationException("Execute Parse() at the first");
             }
 
-            var visitor = new FormulaVisitor();
+            var visitor = new FormulaVisitor() { Host = Host };
             return visitor.Visit(Tree);
         }
     }
