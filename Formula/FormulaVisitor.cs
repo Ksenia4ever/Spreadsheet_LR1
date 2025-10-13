@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Formula
+﻿namespace Formula
 {
     internal class FormulaVisitor : FormulaGrammarBaseVisitor<double>
     {
@@ -14,8 +12,6 @@ namespace Formula
         public override double VisitNumberExpr(FormulaGrammarParser.NumberExprContext context)
         {
             var result = double.Parse(context.GetText());
-            Debug.WriteLine(result);
-
             return result;
         }
 
