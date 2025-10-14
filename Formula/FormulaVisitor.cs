@@ -1,4 +1,6 @@
-﻿namespace Formula
+﻿using System.Globalization;
+
+namespace Formula
 {
     internal class FormulaVisitor : FormulaGrammarBaseVisitor<double>
     {
@@ -11,7 +13,10 @@
 
         public override double VisitNumberExpr(FormulaGrammarParser.NumberExprContext context)
         {
-            var result = double.Parse(context.GetText());
+            var text = context.GetText();
+            text = text.Replace(',', '.');
+
+            var result = double.Parse(text, CultureInfo.InvariantCulture);
             return result;
         }
 

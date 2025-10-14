@@ -19,7 +19,7 @@ expression :
  * Lexer Rules
  */
 
-NUMBER : INT ('.' INT)?; 
+NUMBER : INT (('.'|',') INT)?; 
 IDENTIFIER : [a-zA-Z]+[1-9][0-9]*;
 
 INT : ('0'..'9')+;
