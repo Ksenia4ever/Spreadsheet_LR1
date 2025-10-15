@@ -2,7 +2,7 @@
 {
     internal static class Utilities
     {
-        static internal Tuple<int, int> GetCellCoordinate(string cellName)
+        static public Coordinate GetCellCoordinate(string cellName)
         {
             if (string.IsNullOrWhiteSpace(cellName))
             {
@@ -68,7 +68,40 @@
             var col0 = (int)col1 - 1;
             var row0 = (int)row1 - 1;
 
-            return Tuple.Create(col0, row0);
+            return new Coordinate() { Column = col0, Row = row0 };
+        }
+
+        static public string GetCellName(Coordinate coordinate)
+        {
+            var cellName = $"{GetColumnName(coordinate.Column)}{GetRowName(coordinate.Row)}";
+            return cellName;
+        }
+
+        static public string GetColumnName(int column)
+        {
+            if (column < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(column), "Invalid column index.");
+            }
+
+            string columnName = "";
+            while (column >= 0)
+            {
+                int remainder = column % 26;
+                columnName = (char)(remainder + 'A') + columnName;
+                column = (column / 26) - 1;
+            }
+            return columnName;
+        }
+
+        static public string GetRowName(int rowIndex)
+        {
+            if (rowIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(rowIndex), "Invalid row index.");
+            }
+
+            return $"{rowIndex + 1}";
         }
     }
 }

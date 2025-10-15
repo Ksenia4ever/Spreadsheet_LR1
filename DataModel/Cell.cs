@@ -1,4 +1,5 @@
 ﻿using Formula;
+using System.Text.Json.Serialization;
 
 namespace DataModel
 {
@@ -6,13 +7,14 @@ namespace DataModel
     {
         #region Properties
 
-        public int Column { get; set; } = -1;
-        public int Row { get; set; } = -1;
-        public double Value { get; set; } = 0;
+        public Coordinate Coordinate { get; init; } = new Coordinate() { Column = -1, Row = -1 };
+        public double? Value { get; set; } = null;
         public string Formula { get; set; } = string.Empty;
 
+        [JsonIgnore]
         static public Cell Empty => new Cell();
 
+        [JsonIgnore]
         public bool IsEmpty => this.Equals(Empty);
 
         #endregion
@@ -22,13 +24,12 @@ namespace DataModel
         public override bool Equals(object? obj)
         {
             return obj is Cell cell &&
-                   Column == cell.Column &&
-                   Row == cell.Row &&
+                   Coordinate.Equals(cell.Coordinate) &&
                    Value == cell.Value &&
                    Formula == cell.Formula;
         }
 
-        public double GetValue(IFormulaHost formulaHost)
+        public double? GetValue(IFormulaHost formulaHost)
         {
             if (!string.IsNullOrEmpty(Formula))
             {
