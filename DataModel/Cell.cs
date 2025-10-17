@@ -7,9 +7,9 @@ namespace DataModel
     {
         #region Properties
 
-        public Coordinate Coordinate { get; init; } = new Coordinate() { Column = -1, Row = -1 };
         public double? Value { get; set; } = null;
-        public string Formula { get; set; } = string.Empty;
+
+        public string? Formula { get; set; } = null;
 
         [JsonIgnore]
         static public Cell Empty => new Cell();
@@ -24,7 +24,6 @@ namespace DataModel
         public override bool Equals(object? obj)
         {
             return obj is Cell cell &&
-                   Coordinate.Equals(cell.Coordinate) &&
                    Value == cell.Value &&
                    Formula == cell.Formula;
         }

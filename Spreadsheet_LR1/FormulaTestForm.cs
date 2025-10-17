@@ -1,3 +1,4 @@
+using Commands;
 using DataModel;
 using Formula;
 
@@ -15,12 +16,35 @@ namespace Spreadsheet_LR1
             try
             {
                 var ss = new Spreadsheet();
-                ss.AddCell("D10").Value = 50;
-                ss.AddCell("B1").Value = 30;
-                ss.AddCell("A1").Value = 10;
-                ss.AddCell("B2").Value = 40;
-                ss.AddCell("A2").Value = 20;
-                ss.OrderCells();
+                ss.AddCell(new Coordinate() { Name = "D10" }).Value = 50;
+                ss.AddCell(new Coordinate() { Name = "B1" }).Value = 30;
+                ss.AddCell(new Coordinate() { Name = "A1" }).Value = 10;
+                ss.AddCell(new Coordinate() { Name = "B2" }).Value = 40;
+                ss.AddCell(new Coordinate() { Name = "A2" }).Value = 20;
+
+                var saveCmd = new SaveSpreadsheetCommand() { Spreadsheet = ss, FilePath = "C:\\Temp\\ss.json" };
+                saveCmd.Execute();
+
+                var addColCmd = new AddColumnCommand() { Spreadsheet = ss, ColumnCoordinate = new Coordinate() { ColumnName = "B" } };
+                addColCmd.Execute();
+
+                var addRowCmd = new AddRowCommand() { Spreadsheet = ss, RowCoordinate = new Coordinate() { RowName = "2" } };
+                addRowCmd.Execute();
+
+                var clearCmd = new ClearCellCommand() { Spreadsheet = ss, CellCoordinate = new Coordinate() { Name = "A1" } };
+                clearCmd.Execute();
+
+                var editCmd = new EditCellCommand() { Spreadsheet = ss, CellCoordinate = new Coordinate() { Name = "E11" } };
+                editCmd.Value = 500;
+                editCmd.Execute();
+
+                var delColCmd = new DeleteColumnCommand() { Spreadsheet = ss, ColumnCoordinate = new Coordinate() { ColumnName = "B" } };
+                delColCmd.Execute();
+
+                var delRowCmd = new DeleteRowCommand() { Spreadsheet = ss, RowCoordinate = new Coordinate() { RowName = "2" } };
+                delRowCmd.Execute();
+
+                saveCmd.Execute();
 
                 var formula = formulaTextBox.Text;
 

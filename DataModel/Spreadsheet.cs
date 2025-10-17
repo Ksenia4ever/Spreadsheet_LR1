@@ -9,7 +9,7 @@ namespace DataModel
 
         public string Name { get; set; } = string.Empty;
 
-        public List<Cell> Cells
+        public SortedDictionary<Coordinate, Cell> Cells
         {
             get => _cells;
             init
@@ -49,93 +49,66 @@ namespace DataModel
         }
 
         [JsonIgnore]
-        public int RealColumns => Cells.Any() ? Cells.Max(c => c.Coordinate.Column) : 0;
+        public int RealColumns => Cells.Any() ? Cells.Max(kvp => kvp.Key.Column) + 1 : 0;
 
         [JsonIgnore]
-        public int RealRows => Cells.Any() ? Cells.Max(c => c.Coordinate.Row) : 0;
+        public int RealRows => Cells.Any() ? Cells.Max(kvp => kvp.Key.Row) + 1 : 0;
 
         #endregion
 
         #region Methods
-
-        public Cell AddCell(string cellName)
-        {
-            var coord = Utilities.GetCellCoordinate(cellName);
-            return AddCell(coord);
-        }
 
         public Cell AddCell(Coordinate coordinate)
         {
             var cell = FindCell(coordinate);
             if (cell == null)
             {
-                cell = new Cell() { Coordinate = coordinate };
-                Cells.Add(cell);
+                cell = new Cell();
+                Cells.Add(coordinate, cell);
+
+                UpdateColumnsAndRows();
             }
 
             return cell;
-        }
-
-        public void RemoveCell(string cellName)
-        {
-            var coord = Utilities.GetCellCoordinate(cellName);
-            RemoveCell(coord);
         }
 
         public void RemoveCell(Coordinate coordinate)
         {
-            var cell = FindCell(coordinate);
-            if (cell != null)
-            {
-                Cells.Remove(cell);
-            }
+            Cells.Remove(coordinate);
+
+            UpdateColumnsAndRows();
         }
 
         public Cell? MoveCell(Coordinate oldCoordinate, Coordinate newCoordinate)
         {
-            var cell = FindCell(oldCoordinate);
-            if (cell != null)
+            Cells.TryGetValue(oldCoordinate, out Cell? cell);
+            Cells.Remove(oldCoordinate);
+            Cells.Remove(newCoordinate);
+            if (cell != null && !cell.IsEmpty)
             {
-                RemoveCell(newCoordinate);
-                RemoveCell(oldCoordinate);
-
-                var newCell = AddCell(newCoordinate);
-                newCell.Value = cell.Value;
-                newCell.Formula = cell.Formula;
-
-                cell = newCell;
+                Cells.Add(newCoordinate, cell);
             }
+
+            UpdateColumnsAndRows();
 
             return cell;
         }
 
-        public Cell? FindCell(string cellName)
-        {
-            var coord = Utilities.GetCellCoordinate(cellName);
-            return FindCell(coord);
-        }
-
         public Cell? FindCell(Coordinate coordinate)
         {
-            var cell = Cells.FirstOrDefault(c => c.Coordinate.Equals(coordinate));
+            Cells.TryGetValue(coordinate, out Cell? cell);
             return cell;
         }
 
         public double GetIdentifierValue(string cellName)
         {
-            var cell = FindCell(cellName);
+            var cell = FindCell(new Coordinate() { Name = cellName });
             if (cell == null)
             {
                 throw new ArgumentException("Invalid cell name");
             }
 
             return cell.GetValue(this) ?? 0;
-        }
-
-        public void OrderCells()
-        {
-            _cells = _cells.OrderBy(c => c.Coordinate)
-                           .ToList();
         }
 
         public void UpdateColumnsAndRows()
@@ -148,32 +121,14 @@ namespace DataModel
         {
             // remove empty
             {
-                var empty = _cells.Select((c, i) => KeyValuePair.Create(c, i))
-                                  .Where(c => c.Key.IsEmpty)
+                var empty = _cells.Where(c => c.Value.IsEmpty)
+                                  .Select(kvp => kvp.Key)
                                   .ToList();
-                foreach (var kvp in empty)
+                foreach (var coordinate in empty)
                 {
-                    _cells.RemoveAt(kvp.Value);
+                    _cells.Remove(coordinate);
                 }
             }
-
-            // remove duplicates (cells with the same coordinates)
-            for (var index = _cells.Count - 1; index >= 0; index--)
-            {
-                var cell = _cells[index];
-                var duplicates = _cells.Take(index)
-                                       .Select((c, i) => KeyValuePair.Create(c, i))
-                                       .Where(kvp => kvp.Key.Coordinate.Equals(cell.Coordinate))
-                                       .Reverse()
-                                       .ToList();
-                foreach(var kvp in duplicates)
-                {
-                    _cells.RemoveAt(kvp.Value);
-                }
-                index -= duplicates.Count;
-            }
-
-            OrderCells();
 
             UpdateColumnsAndRows();
         }
@@ -184,7 +139,7 @@ namespace DataModel
 
         int _columns = 0;
         int _rows = 0;
-        List<Cell> _cells = new List<Cell>();
+        SortedDictionary<Coordinate, Cell> _cells = new SortedDictionary<Coordinate, Cell>();
 
         #endregion
     }

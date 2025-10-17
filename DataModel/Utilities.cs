@@ -1,6 +1,6 @@
 ﻿namespace DataModel
 {
-    internal static class Utilities
+    public static class Utilities
     {
         static public Coordinate GetCellCoordinate(string cellName)
         {
