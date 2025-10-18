@@ -7,6 +7,8 @@
             if (Spreadsheet != null)
             {
                 Spreadsheet.RemoveCell(CellCoordinate);
+                Value = null;
+                Formula = null;
             }
         }
     }
