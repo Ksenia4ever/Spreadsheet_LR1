@@ -1,5 +1,6 @@
 using Commands;
 using DataModel;
+using System.Windows.Forms;
 
 namespace SpreadsheetUI
 {
@@ -15,6 +16,13 @@ namespace SpreadsheetUI
 
         void Init()
         {
+            if (!System.Windows.Forms.SystemInformation.TerminalServerSession)
+            {
+                var dgvType = _grid.GetType();
+                System.Reflection.PropertyInfo pi = dgvType.GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                pi.SetValue(_grid, true, null);
+            }
+
             Spreadsheet.AddCell(new Coordinate() { Name = "D10" }).Value = 50;
             Spreadsheet.AddCell(new Coordinate() { Name = "B1" }).Value = 30;
             Spreadsheet.AddCell(new Coordinate() { Name = "A1" }).Value = 10;

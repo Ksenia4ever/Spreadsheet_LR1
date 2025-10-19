@@ -30,6 +30,7 @@
         {
             DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             _grid = new DataGridView();
             _mainMenu = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
@@ -55,15 +56,14 @@
             // 
             _grid.AllowUserToAddRows = false;
             _grid.AllowUserToDeleteRows = false;
-            _grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
-            _grid.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCells;
+            _grid.CausesValidation = false;
             dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
             dataGridViewCellStyle1.BackColor = SystemColors.Control;
             dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F);
             dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
             dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.False;
             _grid.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             _grid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
@@ -78,6 +78,14 @@
             _grid.Location = new Point(0, 24);
             _grid.MultiSelect = false;
             _grid.Name = "_grid";
+            dataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = SystemColors.Control;
+            dataGridViewCellStyle3.Font = new Font("Segoe UI", 9F);
+            dataGridViewCellStyle3.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = DataGridViewTriState.False;
+            _grid.RowHeadersDefaultCellStyle = dataGridViewCellStyle3;
             _grid.SelectionMode = DataGridViewSelectionMode.CellSelect;
             _grid.Size = new Size(800, 426);
             _grid.TabIndex = 0;
