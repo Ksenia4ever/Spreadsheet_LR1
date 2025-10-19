@@ -1,4 +1,4 @@
-namespace Spreadsheet_LR1
+namespace SpreadsheetUI
 {
     internal static class Program
     {
@@ -11,7 +11,7 @@ namespace Spreadsheet_LR1
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new FormulaTestForm());
+            Application.Run(new MainForm());
         }
     }
 }

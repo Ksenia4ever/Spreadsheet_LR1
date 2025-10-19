@@ -79,6 +79,13 @@ namespace DataModel
             UpdateColumnsAndRows();
         }
 
+        public void RemoveAllCells()
+        {
+            Cells.Clear();
+
+            UpdateColumnsAndRows();
+        }
+
         public Cell? MoveCell(Coordinate oldCoordinate, Coordinate newCoordinate)
         {
             Cells.TryGetValue(oldCoordinate, out Cell? cell);
