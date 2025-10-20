@@ -1,12 +1,11 @@
 using Commands;
 using DataModel;
-using System.Windows.Forms;
 
 namespace SpreadsheetUI
 {
     public partial class MainForm : Form
     {
-        Spreadsheet Spreadsheet { get; set; } = new Spreadsheet() { Columns = 15, Rows = 15 };
+        Spreadsheet Spreadsheet { get; set; } = CreateNewSpreadsheet();
 
         public MainForm()
         {
@@ -16,14 +15,14 @@ namespace SpreadsheetUI
 
         void Init()
         {
-            if (!System.Windows.Forms.SystemInformation.TerminalServerSession)
+            if (!SystemInformation.TerminalServerSession)
             {
                 var dgvType = _grid.GetType();
-                System.Reflection.PropertyInfo pi = dgvType.GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                var pi = dgvType.GetProperty("DoubleBuffered", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
                 pi.SetValue(_grid, true, null);
             }
 
-            Spreadsheet.AddCell(new Coordinate() { Name = "D10" }).Value = 50;
+            Spreadsheet.AddCell(new Coordinate() { Name = "E5" }).Formula = "A1 + B2";
             Spreadsheet.AddCell(new Coordinate() { Name = "B1" }).Value = 30;
             Spreadsheet.AddCell(new Coordinate() { Name = "A1" }).Value = 10;
             Spreadsheet.AddCell(new Coordinate() { Name = "B2" }).Value = 40;
@@ -46,6 +45,8 @@ namespace SpreadsheetUI
             _grid.Invalidate();
         }
 
+        static Spreadsheet CreateNewSpreadsheet() => new Spreadsheet() { Columns = 5, Rows = 5 };
+
         void OnRowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
         {
             var rowName = new Coordinate() { Row = e.RowIndex }.RowName;
@@ -64,24 +65,13 @@ namespace SpreadsheetUI
         {
             var coord = new Coordinate() { Column = e.ColumnIndex, Row = e.RowIndex };
             var cell = Spreadsheet.FindCell(coord);
-            if (cell != null)
-            {
-                e.Value = cell.GetValue(Spreadsheet);
-            }
-            else
-            {
-                e.Value = string.Empty;
-            }
-        }
 
-        void OnCellValuePushed(object sender, DataGridViewCellValueEventArgs e)
-        {
-
+            e.Value = cell?.GetValue(Spreadsheet);
         }
 
         void OnNewSpreadsheet(object sender, EventArgs e)
         {
-            Spreadsheet = new Spreadsheet() { Columns = 15, Rows = 15 };
+            Spreadsheet = CreateNewSpreadsheet();
             UpdateGrid();
         }
 
@@ -185,7 +175,7 @@ namespace SpreadsheetUI
             }
         }
 
-        private void OnDeleteRow(object sender, EventArgs e)
+        void OnDeleteRow(object sender, EventArgs e)
         {
             try
             {
@@ -243,6 +233,61 @@ namespace SpreadsheetUI
         void OnExitForm(object sender, EventArgs e)
         {
             Close();
+        }
+
+        void OnFormClosing(object? sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing)
+            {
+                var result = MessageBox.Show(
+                    "Are you sure you want to close the window?",
+                    "Exit Spreadsheet",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question,
+                    MessageBoxDefaultButton.Button2);
+
+                if (result != DialogResult.Yes)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+        }
+
+        void OnEditCell(object sender, EventArgs e)
+        {
+            try
+            {
+                var currentCell = _grid.CurrentCell;
+                if (currentCell != null)
+                {
+                    var cmd = new EditCellCommand()
+                    {
+                        Spreadsheet = Spreadsheet,
+                        CellCoordinate = new Coordinate() { Column = currentCell.ColumnIndex, Row = currentCell.RowIndex }
+                    };
+
+                    var editForm = new CellEditForm() { Value = cmd.Value, Formula = cmd.Formula };
+                    var res = editForm.ShowDialog(this);
+                    if (res == DialogResult.OK)
+                    {
+                        cmd.Formula = editForm.Formula;
+                        cmd.Value = editForm.Value;
+                        cmd.Execute();
+
+                        UpdateGrid();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        void OnCellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            OnEditCell(sender, EventArgs.Empty);
         }
     }
 }

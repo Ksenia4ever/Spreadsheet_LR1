@@ -57,11 +57,8 @@ namespace Commands
             if (Spreadsheet != null)
             {
                 var cell = Spreadsheet.FindCell(CellCoordinate);
-                if (cell!=null)
-                {
-                    Formula = cell.Formula;
-                    Value = cell.Value;
-                }
+                Formula = cell?.Formula;
+                Value = cell?.Value;
             }
         }
 
