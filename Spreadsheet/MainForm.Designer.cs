@@ -48,6 +48,8 @@
             clearAllToolStripMenuItem = new ToolStripMenuItem();
             _openFileDialog = new OpenFileDialog();
             _saveFileDialog = new SaveFileDialog();
+            exitToolStripMenuItem = new ToolStripMenuItem();
+            exitToolStripMenuItem1 = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)_grid).BeginInit();
             _mainMenu.SuspendLayout();
             SuspendLayout();
@@ -96,7 +98,7 @@
             // 
             // _mainMenu
             // 
-            _mainMenu.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, columnToolStripMenuItem, rowToolStripMenuItem, cellToolStripMenuItem });
+            _mainMenu.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, columnToolStripMenuItem, rowToolStripMenuItem, cellToolStripMenuItem, exitToolStripMenuItem });
             _mainMenu.Location = new Point(0, 0);
             _mainMenu.Name = "_mainMenu";
             _mainMenu.Size = new Size(800, 24);
@@ -183,14 +185,14 @@
             // clearToolStripMenuItem
             // 
             clearToolStripMenuItem.Name = "clearToolStripMenuItem";
-            clearToolStripMenuItem.Size = new Size(116, 22);
+            clearToolStripMenuItem.Size = new Size(180, 22);
             clearToolStripMenuItem.Text = "Clear";
             clearToolStripMenuItem.Click += OnClearCell;
             // 
             // clearAllToolStripMenuItem
             // 
             clearAllToolStripMenuItem.Name = "clearAllToolStripMenuItem";
-            clearAllToolStripMenuItem.Size = new Size(116, 22);
+            clearAllToolStripMenuItem.Size = new Size(180, 22);
             clearAllToolStripMenuItem.Text = "Clear all";
             clearAllToolStripMenuItem.Click += OnClearAllCells;
             // 
@@ -207,6 +209,20 @@
             _saveFileDialog.FileName = "Spreadsheet.json";
             _saveFileDialog.Filter = "JSON files|*.json";
             _saveFileDialog.Title = "Save Spreadsheet";
+            // 
+            // exitToolStripMenuItem
+            // 
+            exitToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { exitToolStripMenuItem1 });
+            exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            exitToolStripMenuItem.Size = new Size(38, 20);
+            exitToolStripMenuItem.Text = "Exit";
+            // 
+            // exitToolStripMenuItem1
+            // 
+            exitToolStripMenuItem1.Name = "exitToolStripMenuItem1";
+            exitToolStripMenuItem1.Size = new Size(180, 22);
+            exitToolStripMenuItem1.Text = "Exit";
+            exitToolStripMenuItem1.Click += OnExitForm;
             // 
             // MainForm
             // 
@@ -245,5 +261,7 @@
         private ToolStripMenuItem cellToolStripMenuItem;
         private ToolStripMenuItem clearToolStripMenuItem;
         private ToolStripMenuItem clearAllToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem;
+        private ToolStripMenuItem exitToolStripMenuItem1;
     }
 }

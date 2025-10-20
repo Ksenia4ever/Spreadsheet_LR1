@@ -239,5 +239,10 @@ namespace SpreadsheetUI
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        void OnExitForm(object sender, EventArgs e)
+        {
+            Close();
+        }
     }
 }
