@@ -28,7 +28,7 @@
         {
             if (FormulaMode)
             {
-                _valueTextBox.Text = $"= {Formula}";
+                _valueTextBox.Text = $"={Formula}";
             }
             else
             {
@@ -48,16 +48,23 @@
             else
             {
                 Formula = null;
-                if (double.TryParse(text, out double value))
+                if (string.IsNullOrEmpty(text))
                 {
-                    Value = value;
+                    Value = null;
                 }
                 else
                 {
-                    MessageBox.Show("Can not parse cell value, it should be double of formula text.",
-                                    "Error",
-                                    MessageBoxButtons.OK,
-                                    MessageBoxIcon.Error);
+                    if (double.TryParse(text, out double value))
+                    {
+                        Value = value;
+                    }
+                    else
+                    {
+                        MessageBox.Show("Can not parse cell value, it should be number of formula text.",
+                                        "Error",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                    }
                 }
             }
         }

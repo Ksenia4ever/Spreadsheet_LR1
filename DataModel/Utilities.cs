@@ -25,7 +25,7 @@
                     throw new FormatException($"Invalid column letter: '{cellName[i]}'.");
                 }
 
-                col1 = col1 * 26 + (c - 'A' + 1);
+                col1 = col1 * _alphabetLenght + (c - 'A' + 1);
                 i++;
             }
 
@@ -44,7 +44,7 @@
                     throw new FormatException($"Invalid character in row part: '{d}'.");
                 }
 
-                row1 = row1 * 10 + (d - '0');
+                row1 = row1 * _base10 + (d - '0');
                 i++;
             }
 
@@ -87,9 +87,9 @@
             string columnName = "";
             while (column >= 0)
             {
-                int remainder = column % 26;
+                int remainder = column % _alphabetLenght;
                 columnName = (char)(remainder + 'A') + columnName;
-                column = (column / 26) - 1;
+                column = (column / _alphabetLenght) - 1;
             }
             return columnName;
         }
@@ -103,5 +103,8 @@
 
             return $"{rowIndex + 1}";
         }
+
+        const int _base10 = 10;
+        const int _alphabetLenght = 26;
     }
 }

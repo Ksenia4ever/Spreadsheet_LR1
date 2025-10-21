@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace DataModel
 {
-    public class Spreadsheet : IFormulaHost
+    public class Spreadsheet : ICellHost, IFormulaHost
     {
         #region Properties
 
@@ -107,15 +107,31 @@ namespace DataModel
             return cell;
         }
 
+        public void ResetCalculatedValues()
+        {
+            foreach(var kvp in Cells)
+            {
+                kvp.Value.ResetCalculatedValue();
+            }
+        }
+
+        public Coordinate FindCoordinate(Cell cell)
+        {
+            foreach (var kvp in Cells)
+            {
+                if (ReferenceEquals(cell, kvp.Value))
+                {
+                    return kvp.Key;
+                }
+            }
+
+            return new Coordinate() { Column = Columns, Row = Rows };
+        }
+
         public double GetIdentifierValue(string cellName)
         {
             var cell = FindCell(new Coordinate() { Name = cellName });
-            if (cell == null)
-            {
-                throw new ArgumentException("Invalid cell name");
-            }
-
-            return cell.GetValue(this) ?? 0;
+            return cell?.GetValue(this) ?? 0;
         }
 
         public void UpdateColumnsAndRows()
@@ -136,6 +152,8 @@ namespace DataModel
                     _cells.Remove(coordinate);
                 }
             }
+
+            ResetCalculatedValues();
 
             UpdateColumnsAndRows();
         }

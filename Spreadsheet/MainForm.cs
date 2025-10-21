@@ -63,10 +63,17 @@ namespace SpreadsheetUI
 
         void OnCellValueNeeded(object sender, DataGridViewCellValueEventArgs e)
         {
-            var coord = new Coordinate() { Column = e.ColumnIndex, Row = e.RowIndex };
-            var cell = Spreadsheet.FindCell(coord);
+            try
+            {
+                var coord = new Coordinate() { Column = e.ColumnIndex, Row = e.RowIndex };
+                var cell = Spreadsheet.FindCell(coord);
 
-            e.Value = cell?.GetValue(Spreadsheet);
+                e.Value = cell?.GetValue(Spreadsheet);
+            }
+            catch (Exception ex)
+            {
+                e.Value = ex.Message;
+            }
         }
 
         void OnNewSpreadsheet(object sender, EventArgs e)

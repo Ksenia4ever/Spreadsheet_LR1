@@ -49,6 +49,8 @@ namespace Commands
                 {
                     cell.Formula = Formula;
                 }
+
+                Spreadsheet.ResetCalculatedValues();
             }
         }
 
