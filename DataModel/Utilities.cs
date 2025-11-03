@@ -11,52 +11,9 @@
 
             cellName = cellName.Trim();
 
-            long col1 = 0; // column in 1-based Excel semantics
-            long row1 = 0; // row in 1-based Excel semantics
             var i = 0;
-
-            // 1) Convert column letters (A..Z) -> 1-based
-            var lettersStart = i;
-            while (i < cellName.Length && char.IsLetter(cellName[i]))
-            {
-                char c = char.ToUpperInvariant(cellName[i]);
-                if (c < 'A' || c > 'Z')
-                {
-                    throw new FormatException($"Invalid column letter: '{cellName[i]}'.");
-                }
-
-                col1 = col1 * _alphabetLenght + (c - 'A' + 1);
-                i++;
-            }
-
-            if (i == lettersStart)
-            {
-                throw new FormatException("Missing column letters at the start (e.g., 'A', 'AA').");
-            }
-
-            // 2) Convert row number letters -> 1-based
-            var digitsStart = i;
-            while (i < cellName.Length)
-            {
-                char d = cellName[i];
-                if (!char.IsDigit(d))
-                {
-                    throw new FormatException($"Invalid character in row part: '{d}'.");
-                }
-
-                row1 = row1 * _base10 + (d - '0');
-                i++;
-            }
-
-            if (i == digitsStart)
-            {
-                throw new FormatException("Missing row digits at the end (e.g., '1', '23').");
-            }
-
-            if (row1 <= 0)
-            {
-                throw new FormatException("Row number must be >= 1.");
-            }
+            long col1 = ParseCellColumnNumber(cellName, ref i); // column in 1-based Excel semantics
+            long row1 = ParseCellRowNumber(cellName, ref i); // row in 1-based Excel semantics
 
             if (col1 > int.MaxValue ||
                 row1 > int.MaxValue)
@@ -102,6 +59,67 @@
             }
 
             return $"{rowIndex + 1}";
+        }
+
+        // Convert column letters (A..Z) -> 1-based
+        static long ParseCellColumnNumber(string cellName, ref int startPos)
+        {
+            long col1 = 0;
+
+            var i = startPos;
+            var lettersStart = i;
+            while (i < cellName.Length && char.IsLetter(cellName[i]))
+            {
+                char c = char.ToUpperInvariant(cellName[i]);
+                if (c < 'A' || c > 'Z')
+                {
+                    throw new FormatException($"Invalid column letter: '{cellName[i]}'.");
+                }
+
+                col1 = col1 * _alphabetLenght + (c - 'A' + 1);
+                i++;
+            }
+
+            if (i == lettersStart)
+            {
+                throw new FormatException("Missing column letters at the start (e.g., 'A', 'AA').");
+            }
+
+            startPos = i;
+            return col1;
+        }
+
+        // Convert row number letters -> 1-based
+        static long ParseCellRowNumber(string cellName, ref int startPos)
+        {
+            long row1 = 0;
+
+            var i = startPos;
+            var digitsStart = i;
+            while (i < cellName.Length)
+            {
+                char d = cellName[i];
+                if (!char.IsDigit(d))
+                {
+                    throw new FormatException($"Invalid character in row part: '{d}'.");
+                }
+
+                row1 = row1 * _base10 + (d - '0');
+                i++;
+            }
+
+            if (i == digitsStart)
+            {
+                throw new FormatException("Missing row digits at the end (e.g., '1', '23').");
+            }
+
+            if (row1 <= 0)
+            {
+                throw new FormatException("Row number must be >= 1.");
+            }
+
+            startPos = i;
+            return row1;
         }
 
         const int _base10 = 10;
